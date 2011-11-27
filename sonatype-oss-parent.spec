@@ -2,7 +2,7 @@
 
 Name:           sonatype-oss-parent
 Version:        6
-Release:        2
+Release:        4
 Summary:        Sonatype OSS Parent
 
 Group:          Development/Java
