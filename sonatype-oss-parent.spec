@@ -49,3 +49,11 @@ install -pm 644 pom.xml \
 %{_mavenpomdir}/JPP-%{name}.pom
 %{_mavendepmapfragdir}/%{name}
 
+
+
+%changelog
+* Sun Nov 27 2011 Guilherme Moro <guilherme@mandriva.com> 6-4
++ Revision: 734239
+- rebuild
+- imported package sonatype-oss-parent
+
