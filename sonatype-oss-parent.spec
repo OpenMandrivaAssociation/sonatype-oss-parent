@@ -1,59 +1,76 @@
-%global artifactid oss-parent
-
+%{?_javapackages_macros:%_javapackages_macros}
 Name:           sonatype-oss-parent
-Version:        6
-Release:        4
+Version:        7
+Release:        6.1%{?dist}
 Summary:        Sonatype OSS Parent
 
-Group:          Development/Java
+
 License:        ASL 2.0
-URL:            http://svn.sonatype.org/spice/tags/oss-parent-6
-#svn export http://svn.sonatype.org/spice/tags/oss-parent-6 sonatype-oss-parent-6
-#tar zcf sonatype-oss-parent-6.tar.gz sonatype-oss-parent-6/
-Source0:       %{name}-%{version}.tar.gz
+URL:            https://github.com/sonatype/oss-parents
+# git clone git://github.com/sonatype/oss-parents.git
+# (cd ./oss-parents; git archive --prefix %{name}-%{version}/ oss-parent-%{version}) | gzip >%{name}-%{version}.tar.gz
+Source:         %{name}-%{version}.tar.gz
+Source1:        http://www.apache.org/licenses/LICENSE-2.0.txt
 
 BuildArch: noarch
 
+BuildRequires:  maven-local
 BuildRequires:  jpackage-utils >= 0:1.7.2
 
-Requires:          jpackage-utils
-Requires:          maven-release-plugin
-Requires(post):    jpackage-utils >= 0:1.7.2
-Requires(postun):  jpackage-utils >= 0:1.7.2
 
 %description
 Sonatype OSS parent pom used by other sonatype packages
 
 %prep
-%setup -q -n %{name}-%{version}
+%setup -q
+cp -p %{SOURCE1} LICENSE
+%pom_remove_plugin org.apache.maven.plugins:maven-enforcer-plugin
 
 %build
-#nothing to do for the pom
+%mvn_build
 
 %install
-# poms
-install -d -m 755 %{buildroot}%{_mavenpomdir}
-install -pm 644 pom.xml \
-    %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
+%mvn_install
 
-%add_to_maven_depmap org.sonatype.oss %{artifactid} %{version} JPP %{name}
-
-%post
-%update_maven_depmap
-
-%postun
-%update_maven_depmap
-
-%files
-%defattr(-,root,root,-)
-%{_mavenpomdir}/JPP-%{name}.pom
-%{_mavendepmapfragdir}/%{name}
-
-
+%files -f .mfiles
+%doc LICENSE
 
 %changelog
-* Sun Nov 27 2011 Guilherme Moro <guilherme@mandriva.com> 6-4
-+ Revision: 734239
-- rebuild
-- imported package sonatype-oss-parent
+* Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 7-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
+* Fri Feb 15 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 7-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
+* Wed Feb 06 2013 Java SIG <java-devel@lists.fedoraproject.org> - 7-4
+- Update for https://fedoraproject.org/wiki/Fedora_19_Maven_Rebuild
+- Replace maven BuildRequires with maven-local
+
+* Thu Jan 17 2013 Michal Srb <msrb@redhat.com> - 7-3
+- Build with xmvn
+
+* Wed Nov 21 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 7-2
+- Install LICENSE file
+- Resolves: rhbz#879013
+
+* Mon Aug  6 2012 Mikolaj Izdebski <mizdebsk@redhat.com> - 7-1
+- Update to upstream version 7
+
+* Thu Jul 26 2012 Stanislav Ochotnicky <sochotnicky@redhat.com> - 6-5
+- Cleanup spec according to latest guidelines
+- Use pom macro to remove enforcer plugin from pom
+
+* Sat Jul 21 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 6-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
+* Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 6-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
+* Wed Feb 09 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 6-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
+* Thu Jan 20 2011 Stanislav Ochotnicky <sochotnicky@redhat.com> - 6-1
+- Update to latest version that includes the license header
+
+* Wed Dec  1 2010 Stanislav Ochotnicky <sochotnicky@redhat.com> - 5-1
+- Initial version of the package
